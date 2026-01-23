@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "RSS Feed Detector",
+  "name": "Feedsearch",
   "version": "1.0.0",
-  "description": "Detects RSS, Atom, and JSON feeds on web pages and notifies you when feeds are available.",
+  "description": "Discover RSS, Atom, and JSON feeds on any webpage. Based on feedsearch-crawler.",
   "permissions": [
     "activeTab",
     "storage"
