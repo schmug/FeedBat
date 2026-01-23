@@ -1,10 +1,11 @@
 /**
- * Feed Detector - Core detection logic
- * Ported from feedsearch-crawler Python library
+ * FeedBat - Feed Detector
+ * Core detection logic adapted from feedsearch-crawler by DBeath
+ * https://github.com/DBeath/feedsearch-crawler
  */
 
 const FeedDetector = {
-  // Regex patterns from feedsearch-crawler/src/feedsearch_crawler/feed_spider/regexes.py
+  // Regex patterns adapted from feedsearch-crawler
   patterns: {
     // Detects RSS/Atom/RDF feed content
     rss: /(<rss|<rdf|<feed)/i,

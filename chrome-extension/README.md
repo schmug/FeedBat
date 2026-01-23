@@ -6,7 +6,7 @@ A Chrome extension that discovers RSS, Atom, and JSON feeds on any webpage. Your
 
 FeedBat is a browser-based companion to your RSS reader. It detects feeds on any webpage and notifies you with a badge count, making it easy to subscribe to new content.
 
-The feed detection logic is adapted from [**feedsearch-crawler**](https://github.com/schmug/feedsearch-crawler), a Python library for RSS/Atom/JSON feed discovery.
+The feed detection logic is adapted from [**feedsearch-crawler**](https://github.com/DBeath/feedsearch-crawler), a Python library for RSS/Atom/JSON feed discovery by DBeath.
 
 ## Features
 
@@ -24,8 +24,8 @@ The feed detection logic is adapted from [**feedsearch-crawler**](https://github
 
 1. **Clone or download** this repository:
    ```bash
-   git clone https://github.com/schmug/feedsearch-crawler.git
-   cd feedsearch-crawler/chrome-extension
+   git clone https://github.com/schmug/FeedBat.git
+   cd FeedBat/chrome-extension
    ```
 
 2. **Generate icons** (first time only):
@@ -64,7 +64,7 @@ Click the ⚙️ button in the popup to access settings:
 
 ## How It Works
 
-FeedBat uses the same detection strategies as feedsearch-crawler:
+FeedBat uses the same detection strategies as the original feedsearch-crawler library:
 
 ### Feed Detection Methods
 
@@ -109,7 +109,7 @@ chrome-extension/
 
 ## Credits
 
-Feed detection logic adapted from [**feedsearch-crawler**](https://github.com/schmug/feedsearch-crawler).
+Feed detection logic adapted from [**feedsearch-crawler**](https://github.com/DBeath/feedsearch-crawler) by DBeath.
 
 ## License
 
@@ -117,5 +117,5 @@ MIT License
 
 ## Links
 
-- [GitHub Repository](https://github.com/schmug/feedsearch-crawler)
-- [feedsearch-crawler on PyPI](https://pypi.org/project/feedsearch-crawler/)
+- [FeedBat on GitHub](https://github.com/schmug/FeedBat)
+- [Original feedsearch-crawler](https://github.com/DBeath/feedsearch-crawler)
