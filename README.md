@@ -21,8 +21,8 @@ A Chrome extension that discovers RSS, Atom, and JSON feeds on any webpage. Your
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/schmug/feedsearch-crawler.git
-   cd feedsearch-crawler
+   git clone https://github.com/schmug/FeedBat.git
+   cd FeedBat
    ```
 
 2. Generate icons (first time only):
@@ -69,16 +69,9 @@ FeedBat detects feeds using multiple methods:
 
 The feed detection logic in this extension is adapted from [**feedsearch-crawler**](https://github.com/DBeath/feedsearch-crawler), an excellent Python library for RSS/Atom/JSON feed discovery by [DBeath](https://github.com/DBeath).
 
-If you need server-side feed discovery with comprehensive crawling, scoring, and metadata extraction, check out the original Python library:
-
-```bash
-pip install feedsearch-crawler
-```
-
-**Original Project Links:**
+**Original Library:**
 - [feedsearch-crawler on GitHub](https://github.com/DBeath/feedsearch-crawler)
 - [feedsearch-crawler on PyPI](https://pypi.org/project/feedsearch-crawler/)
-- [feedsearch.dev API](https://feedsearch.dev)
 
 ## License
 
