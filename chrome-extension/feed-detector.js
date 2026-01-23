@@ -76,6 +76,141 @@ const FeedDetector = {
     'pdf', 'doc', 'docx', 'zip', 'tar', 'gz'
   ],
 
+  // YouTube RSS feed URL template
+  youtubeRssTemplate: 'https://www.youtube.com/feeds/videos.xml?channel_id=',
+
+  /**
+   * Check if the current page is a YouTube page
+   * @param {string} url - The current page URL
+   * @returns {Object} YouTube page type info
+   */
+  isYouTubePage(url) {
+    const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
+    if (!isYouTube) return { isYouTube: false };
+
+    return {
+      isYouTube: true,
+      isVideoPage: url.includes('/watch'),
+      isShorts: url.includes('/shorts/'),
+      isChannelPage: url.includes('/channel/') || url.includes('/c/') || url.includes('/@') || url.includes('/user/')
+    };
+  },
+
+  /**
+   * Extract YouTube channel RSS feed from the current page
+   * Based on youtube-rss-extractor logic
+   * @param {Document} doc - The document to analyze
+   * @returns {Object|null} Feed info if YouTube channel found, null otherwise
+   */
+  extractYouTubeFeed(doc) {
+    const currentUrl = doc.location.href;
+    const pageType = this.isYouTubePage(currentUrl);
+
+    if (!pageType.isYouTube) return null;
+
+    let channelId = null;
+    let channelName = null;
+    let rssUrl = null;
+
+    // --- ID EXTRACTION ---
+
+    // Strategy 1: Dynamic DOM elements (Most reliable for SPA transitions)
+    if (pageType.isVideoPage) {
+      // Try owner link first
+      const ownerLink = doc.querySelector('ytd-video-owner-renderer a[href^="/channel/UC"], #owner a[href^="/channel/UC"]');
+      if (ownerLink) {
+        const href = ownerLink.getAttribute('href');
+        if (href) {
+          const match = href.match(/\/channel\/(UC[\w-]+)/);
+          if (match) channelId = match[1];
+        }
+      }
+
+      // Try meta tag fallback
+      if (!channelId) {
+        const metaId = doc.querySelector('meta[itemprop="channelId"]');
+        if (metaId) {
+          const content = metaId.getAttribute('content');
+          if (content) channelId = content;
+        }
+      }
+    }
+    else if (pageType.isShorts) {
+      const ownerLink = doc.querySelector('ytd-reel-player-overlay-renderer a[href^="/channel/UC"]');
+      if (ownerLink) {
+        const href = ownerLink.getAttribute('href');
+        if (href) {
+          const match = href.match(/\/channel\/(UC[\w-]+)/);
+          if (match) channelId = match[1];
+        }
+      }
+    }
+    else if (pageType.isChannelPage) {
+      // Check for RSS link tag (YouTube provides this on channel pages)
+      const rssLink = doc.querySelector('link[rel="alternate"][type="application/rss+xml"]');
+      if (rssLink && rssLink.href) {
+        const href = rssLink.href;
+        const match = href.match(/channel_id=([^&]+)/);
+        if (match) channelId = match[1];
+        rssUrl = href;
+      }
+    }
+
+    // Strategy 2: Universal Fallback (Targeted Script Search)
+    if (!channelId) {
+      const scripts = doc.querySelectorAll('script');
+      for (const script of scripts) {
+        const text = script.textContent;
+        if (text && text.includes('channelId')) {
+          const match = text.match(/"channelId":"(UC[\w-]+)"/);
+          if (match) {
+            channelId = match[1];
+            break;
+          }
+        }
+      }
+    }
+
+    // --- NAME EXTRACTION ---
+    if (pageType.isVideoPage) {
+      const videoOwner = doc.querySelector('ytd-video-owner-renderer ytd-channel-name #text');
+      if (videoOwner) channelName = videoOwner.textContent?.trim();
+    }
+    else if (pageType.isShorts) {
+      const shortsOwner = doc.querySelector('ytd-reel-player-header-renderer #channel-name #text');
+      if (shortsOwner) channelName = shortsOwner.textContent?.trim();
+    }
+    else {
+      const channelHeader = doc.querySelector('#channel-header .ytd-channel-name #text');
+      if (channelHeader) channelName = channelHeader.textContent?.trim();
+    }
+
+    // Fallback name extraction
+    if (!channelName) {
+      const authorNameMeta = doc.querySelector('[itemprop="author"] [itemprop="name"]');
+      if (authorNameMeta) {
+        const content = authorNameMeta.getAttribute('content');
+        if (content) channelName = content;
+      }
+    }
+
+    // --- FINAL URL CONSTRUCTION ---
+    if (channelId && !rssUrl) {
+      rssUrl = this.youtubeRssTemplate + channelId;
+    }
+
+    if (!rssUrl) return null;
+
+    return {
+      url: rssUrl,
+      title: channelName ? `${channelName} - YouTube` : 'YouTube Channel Feed',
+      type: 'RSS',
+      source: 'youtube-fallback',
+      channelId: channelId,
+      channelName: channelName || 'Unknown Channel'
+    };
+  },
+
   /**
    * Extract feed links from <link> tags in the document
    * @param {Document} doc - The document to analyze
@@ -313,7 +448,8 @@ const FeedDetector = {
       feeds: [],
       potentialFeeds: [],
       siteMetadata: this.extractSiteMetadata(doc),
-      isCurrentPageFeed: false
+      isCurrentPageFeed: false,
+      isYouTube: false
     };
 
     // Check if current page is a feed
@@ -326,6 +462,19 @@ const FeedDetector = {
     // Extract declared feed links
     const declaredFeeds = this.extractFeedLinks(doc);
     results.feeds.push(...declaredFeeds);
+
+    // YouTube fallback: extract channel RSS if on YouTube
+    const youtubeFeed = this.extractYouTubeFeed(doc);
+    if (youtubeFeed) {
+      results.isYouTube = true;
+      // Add YouTube feed if not already detected via link tags
+      const alreadyHasYouTubeFeed = results.feeds.some(f =>
+        f.url.includes('youtube.com/feeds/videos.xml')
+      );
+      if (!alreadyHasYouTubeFeed) {
+        results.feeds.push(youtubeFeed);
+      }
+    }
 
     // Extract potential feeds from page links
     const potentialFeeds = this.extractPotentialFeeds(doc);
