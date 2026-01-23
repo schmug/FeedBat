@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSS Feed Detector</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <img id="site-favicon" src="" alt="" class="favicon">
+        <div class="site-info">
+          <h1 id="site-name">RSS Feed Detector</h1>
+          <span id="site-url" class="site-url"></span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <span>Detecting feeds...</span>
+      </div>
+
+      <div id="no-feeds" class="no-feeds hidden">
+        <div class="icon">📡</div>
+        <p>No RSS feeds detected on this page.</p>
+        <button id="check-common" class="btn btn-secondary">Check common paths</button>
+      </div>
+
+      <div id="feeds-section" class="feeds-section hidden">
+        <h2>Feeds Found</h2>
+        <ul id="feeds-list" class="feeds-list"></ul>
+      </div>
+
+      <div id="potential-section" class="potential-section hidden">
+        <h2>Potential Feeds</h2>
+        <p class="hint">These links might be feeds:</p>
+        <ul id="potential-list" class="feeds-list"></ul>
+      </div>
+    </main>
+
+    <footer>
+      <span class="credit">Powered by feedsearch-crawler</span>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
