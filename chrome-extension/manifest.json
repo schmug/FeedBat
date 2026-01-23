@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Feedsearch",
+  "name": "FeedBat",
   "version": "1.0.0",
-  "description": "Discover RSS, Atom, and JSON feeds on any webpage. Based on feedsearch-crawler.",
+  "description": "Discover RSS, Atom, and JSON feeds on any webpage. A companion to your RSS reader.",
   "permissions": [
     "activeTab",
     "storage"

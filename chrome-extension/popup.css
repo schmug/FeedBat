@@ -22,7 +22,7 @@ body {
 
 /* Header */
 header {
-  background: linear-gradient(135deg, #FF6600 0%, #FF8533 100%);
+  background: linear-gradient(135deg, #5a4fcf 0%, #7c6fd4 100%);
   color: white;
   padding: 12px 16px;
 }
@@ -31,6 +31,11 @@ header {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.logo {
+  font-size: 24px;
+  line-height: 1;
 }
 
 .favicon {
@@ -62,10 +67,69 @@ header {
   display: block;
 }
 
+.settings-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 16px;
+}
+
+.settings-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 /* Main content */
 main {
   flex: 1;
   padding: 16px;
+}
+
+/* Settings Panel */
+.settings-panel {
+  padding: 8px 0;
+}
+
+.settings-panel h2 {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.setting-item {
+  margin-bottom: 12px;
+}
+
+.setting-item label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.setting-item label:hover {
+  background: #f5f5f5;
+}
+
+.setting-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #5a4fcf;
+  cursor: pointer;
+}
+
+.setting-item span {
+  font-size: 14px;
+  color: #333;
+}
+
+.settings-panel .btn {
+  width: 100%;
+  margin-top: 8px;
 }
 
 /* Loading state */
@@ -83,7 +147,7 @@ main {
   width: 24px;
   height: 24px;
   border: 3px solid #f0f0f0;
-  border-top-color: #FF6600;
+  border-top-color: #5a4fcf;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -175,7 +239,7 @@ main {
   font-weight: 600;
   text-transform: uppercase;
   padding: 2px 6px;
-  background: #FF6600;
+  background: #5a4fcf;
   color: white;
   border-radius: 4px;
   flex-shrink: 0;
@@ -187,6 +251,10 @@ main {
 
 .feed-type.json {
   background: #28a745;
+}
+
+.feed-type.rss {
+  background: #FF6600;
 }
 
 .feed-actions {
@@ -234,12 +302,12 @@ main {
 }
 
 .btn-primary {
-  background: #FF6600;
+  background: #5a4fcf;
   color: white;
 }
 
 .btn-primary:hover {
-  background: #E65C00;
+  background: #4a3fbf;
 }
 
 .btn-secondary {
@@ -259,11 +327,11 @@ main {
 }
 
 .potential-section .feed-item {
-  background: #fff9f5;
+  background: #f9f8ff;
 }
 
 .potential-section .feed-item:hover {
-  background: #fff5ed;
+  background: #f3f1ff;
 }
 
 /* Footer */
@@ -276,6 +344,18 @@ footer {
 .credit {
   font-size: 11px;
   color: #999;
+}
+
+.credit-link {
+  font-size: 11px;
+  color: #999;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.credit-link:hover {
+  color: #5a4fcf;
+  text-decoration: underline;
 }
 
 /* Utility */

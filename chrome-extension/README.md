@@ -1,42 +1,32 @@
-# Feedsearch - Chrome Extension
+# FeedBat 🦇 - Chrome Extension
 
-A Chrome extension that discovers RSS, Atom, and JSON feeds on any webpage and notifies you when feeds are available.
+A Chrome extension that discovers RSS, Atom, and JSON feeds on any webpage. Your trusty companion for finding feeds in the wild.
 
 ## About
 
-This extension is a browser-based port of [**feedsearch-crawler**](https://github.com/DBeath/feedsearch-crawler), a Python library for RSS/Atom/JSON feed discovery. The core detection algorithms, regex patterns, and URL filtering heuristics have been adapted from the original Python implementation to run client-side in the browser.
+FeedBat is a browser-based companion to your RSS reader. It detects feeds on any webpage and notifies you with a badge count, making it easy to subscribe to new content.
 
-### Original Project
-
-**feedsearch-crawler** is an asyncio-based web crawler that discovers RSS feeds on websites. It powers [feedsearch.dev](https://feedsearch.dev) and is available on PyPI:
-
-```bash
-pip install feedsearch-crawler
-```
-
-The Python library provides:
-- Concurrent feed discovery across multiple pages
-- Feed scoring and ranking
-- Site metadata extraction
-- OPML export
-
-This Chrome extension brings the feed detection logic directly to your browser for instant, per-page feed discovery.
+The feed detection logic is adapted from [**feedsearch-crawler**](https://github.com/schmug/feedsearch-crawler), a Python library for RSS/Atom/JSON feed discovery.
 
 ## Features
 
-- Automatically detects RSS, Atom, and JSON feeds on any webpage
-- Shows orange badge notification when feeds are found
-- Clean popup UI displaying feed title, type, and URL
-- One-click copy feed URL to clipboard
-- Open feeds directly in new tab
-- Probe common feed paths (`/feed`, `/rss.xml`, `/atom.xml`) on demand
-- Works on most websites
+- 🦇 Automatically detects RSS, Atom, and JSON feeds on any webpage
+- 🔔 Purple badge notification when feeds are found
+- ⚙️ Configurable settings
+- 📋 One-click copy feed URL to clipboard
+- 🔗 Open feeds directly in new tab
+- 🔍 Probe common feed paths on demand
+- 🎨 Clean, modern UI
 
 ## Installation
 
 ### From Source (Developer Mode)
 
-1. **Clone or download** this repository
+1. **Clone or download** this repository:
+   ```bash
+   git clone https://github.com/schmug/feedsearch-crawler.git
+   cd feedsearch-crawler/chrome-extension
+   ```
 
 2. **Generate icons** (first time only):
    - Open `icons/generate-icons.html` in your browser
@@ -51,47 +41,46 @@ This Chrome extension brings the feed detection logic directly to your browser f
 
 4. **Pin the extension**:
    - Click the puzzle piece icon in Chrome toolbar
-   - Click the pin icon next to "Feedsearch"
+   - Click the pin icon next to "FeedBat"
 
 ## Usage
 
 1. Navigate to any website
-2. Look for the orange badge on the extension icon showing the number of feeds found
+2. Look for the purple badge on the FeedBat icon showing the number of feeds found
 3. Click the extension icon to see detected feeds
 4. Click 📋 to copy a feed URL to clipboard
 5. Click ↗️ to open the feed in a new tab
 
+## Settings
+
+Click the ⚙️ button in the popup to access settings:
+
+| Setting | Description |
+|---------|-------------|
+| Auto-detect feeds | Automatically scan pages on load |
+| Show potential feeds | Display links that might be feeds |
+| Show badge count | Display feed count on extension icon |
+| Auto-probe common paths | Automatically check `/feed`, `/rss.xml`, etc. |
+
 ## How It Works
 
-The extension uses the same detection strategies as feedsearch-crawler:
+FeedBat uses the same detection strategies as feedsearch-crawler:
 
 ### Feed Detection Methods
 
 1. **Link Tags**: Parses `<link rel="alternate">` tags with feed MIME types
    ```html
    <link rel="alternate" type="application/rss+xml" href="/feed.xml">
-   <link rel="alternate" type="application/atom+xml" href="/atom.xml">
    ```
 
-2. **Direct Feed Detection**: Checks if the current page is itself a feed by looking for `<rss>`, `<feed>`, or `<rdf>` root elements
+2. **Direct Feed Detection**: Checks if the current page is itself a feed
 
-3. **URL Pattern Matching**: Identifies links containing feed-related keywords using regex patterns from feedsearch-crawler:
+3. **URL Pattern Matching**: Identifies links containing feed-related keywords
    ```javascript
    /\b(rss|feeds?|atom|json|xml|rdf|blogs?|subscribe)\b/i
    ```
 
-4. **Common Path Probing**: Checks standard feed locations like `/feed`, `/rss.xml`, `/atom.xml`, `/index.xml`
-
-### Ported from feedsearch-crawler
-
-The following components were adapted from the Python library:
-
-| Python Module | JavaScript File | Purpose |
-|---------------|-----------------|---------|
-| `regexes.py` | `feed-detector.js` | Feed URL patterns, RSS/Atom detection |
-| `link_filter.py` | `feed-detector.js` | URL filtering, invalid pattern exclusion |
-| `site_meta_parser.py` | `feed-detector.js` | Site metadata extraction |
-| `feed_info_parser.py` | `feed-detector.js` | Feed type detection |
+4. **Common Path Probing**: Checks standard feed locations like `/feed`, `/rss.xml`, `/atom.xml`
 
 ## Feed Types Detected
 
@@ -100,54 +89,33 @@ The following components were adapted from the Python library:
 - JSON Feed
 - RDF
 
-## Permissions
-
-| Permission | Purpose |
-|------------|---------|
-| `activeTab` | Analyze the current page for feeds |
-| `storage` | Cache feed results per tab |
-| `<all_urls>` | Probe common feed paths |
-
 ## Project Structure
 
 ```
 chrome-extension/
 ├── manifest.json       # Extension configuration (Manifest V3)
-├── feed-detector.js    # Core detection logic (ported from Python)
+├── feed-detector.js    # Core detection logic
 ├── content.js          # Content script - runs on every page
 ├── background.js       # Service worker - badge updates
 ├── popup.html          # Extension popup UI
-├── popup.css           # Popup styles
-├── popup.js            # Popup functionality
+├── popup.css           # Popup styles (purple theme)
+├── popup.js            # Popup functionality + settings
 ├── icons/              # Extension icons
-│   ├── generate-icons.html
-│   ├── generate-icons.js
+│   ├── generate-icons.html  # Browser-based icon generator
+│   ├── generate-icons.js    # Node.js icon generator
 │   └── icon*.png
 └── README.md
 ```
 
-## Differences from feedsearch-crawler
-
-| Feature | Python Library | Chrome Extension |
-|---------|----------------|------------------|
-| Scope | Multi-page crawling | Single page |
-| Execution | Server-side | Client-side |
-| Feed validation | Full parsing with feedparser | Header/pattern detection |
-| Feed scoring | Comprehensive scoring system | Basic type detection |
-| Performance | Async concurrent requests | Instant, no network overhead |
-
 ## Credits
 
-This extension is based on [**feedsearch-crawler**](https://github.com/DBeath/feedsearch-crawler) by [DBeath](https://github.com/DBeath).
-
-The original Python library is an excellent tool for server-side feed discovery and powers the [feedsearch.dev](https://feedsearch.dev) API. If you need comprehensive feed discovery with scoring, metadata extraction, and multi-page crawling, use the Python library.
+Feed detection logic adapted from [**feedsearch-crawler**](https://github.com/schmug/feedsearch-crawler).
 
 ## License
 
-MIT License - Same as feedsearch-crawler
+MIT License
 
 ## Links
 
-- [feedsearch-crawler on GitHub](https://github.com/DBeath/feedsearch-crawler)
+- [GitHub Repository](https://github.com/schmug/feedsearch-crawler)
 - [feedsearch-crawler on PyPI](https://pypi.org/project/feedsearch-crawler/)
-- [feedsearch.dev API](https://feedsearch.dev)

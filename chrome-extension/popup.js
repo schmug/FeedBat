@@ -2,6 +2,35 @@
  * Popup Script - Displays detected feeds
  */
 
+// Default settings
+const DEFAULT_SETTINGS = {
+  autoCheck: true,
+  showPotential: false,
+  showBadge: true,
+  probeCommon: false
+};
+
+// Load settings from storage
+async function loadSettings() {
+  try {
+    const result = await chrome.storage.sync.get('settings');
+    return { ...DEFAULT_SETTINGS, ...result.settings };
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
+}
+
+// Save settings to storage
+async function saveSettings(settings) {
+  try {
+    await chrome.storage.sync.set({ settings });
+    // Notify background script of settings change
+    chrome.runtime.sendMessage({ type: 'SETTINGS_UPDATED', settings });
+  } catch (e) {
+    console.error('Failed to save settings:', e);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const elements = {
     loading: document.getElementById('loading'),
@@ -10,11 +39,51 @@ document.addEventListener('DOMContentLoaded', async () => {
     feedsList: document.getElementById('feeds-list'),
     potentialSection: document.getElementById('potential-section'),
     potentialList: document.getElementById('potential-list'),
-    siteFavicon: document.getElementById('site-favicon'),
     siteName: document.getElementById('site-name'),
     siteUrl: document.getElementById('site-url'),
-    checkCommon: document.getElementById('check-common')
+    checkCommon: document.getElementById('check-common'),
+    settingsBtn: document.getElementById('settings-btn'),
+    settingsPanel: document.getElementById('settings-panel'),
+    settingsDone: document.getElementById('settings-done'),
+    mainContent: document.getElementById('main-content'),
+    // Settings checkboxes
+    settingAutoCheck: document.getElementById('setting-auto-check'),
+    settingShowPotential: document.getElementById('setting-show-potential'),
+    settingBadge: document.getElementById('setting-badge'),
+    settingProbeCommon: document.getElementById('setting-probe-common')
   };
+
+  // Load and apply settings
+  const settings = await loadSettings();
+  elements.settingAutoCheck.checked = settings.autoCheck;
+  elements.settingShowPotential.checked = settings.showPotential;
+  elements.settingBadge.checked = settings.showBadge;
+  elements.settingProbeCommon.checked = settings.probeCommon;
+
+  // Settings button toggle
+  elements.settingsBtn.addEventListener('click', () => {
+    const isVisible = !elements.settingsPanel.classList.contains('hidden');
+    if (isVisible) {
+      elements.settingsPanel.classList.add('hidden');
+      elements.mainContent.classList.remove('hidden');
+    } else {
+      elements.settingsPanel.classList.remove('hidden');
+      elements.mainContent.classList.add('hidden');
+    }
+  });
+
+  // Settings done button
+  elements.settingsDone.addEventListener('click', async () => {
+    const newSettings = {
+      autoCheck: elements.settingAutoCheck.checked,
+      showPotential: elements.settingShowPotential.checked,
+      showBadge: elements.settingBadge.checked,
+      probeCommon: elements.settingProbeCommon.checked
+    };
+    await saveSettings(newSettings);
+    elements.settingsPanel.classList.add('hidden');
+    elements.mainContent.classList.remove('hidden');
+  });
 
   // Get current tab
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -27,7 +96,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Request feeds from content script
   try {
     const response = await chrome.tabs.sendMessage(tab.id, { type: 'GET_FEEDS' });
-    displayResults(response, elements);
+    displayResults(response, elements, settings);
   } catch (error) {
     // Content script might not be loaded (e.g., chrome:// pages)
     elements.loading.classList.add('hidden');
@@ -90,7 +159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 });
 
-function displayResults(data, elements) {
+function displayResults(data, elements, settings) {
   elements.loading.classList.add('hidden');
 
   if (!data) {
@@ -101,15 +170,8 @@ function displayResults(data, elements) {
   // Update site info
   if (data.siteMetadata) {
     const meta = data.siteMetadata;
-    elements.siteName.textContent = meta.siteName || 'Unknown Site';
+    elements.siteName.textContent = meta.siteName || 'FeedBat';
     elements.siteUrl.textContent = truncateUrl(data.url || meta.siteUrl);
-
-    if (meta.favicon) {
-      elements.siteFavicon.src = meta.favicon;
-      elements.siteFavicon.onerror = () => {
-        elements.siteFavicon.style.display = 'none';
-      };
-    }
   }
 
   // Display feeds
@@ -120,8 +182,8 @@ function displayResults(data, elements) {
     });
   }
 
-  // Display potential feeds
-  if (data.potentialFeeds && data.potentialFeeds.length > 0) {
+  // Display potential feeds (if setting enabled)
+  if (settings.showPotential && data.potentialFeeds && data.potentialFeeds.length > 0) {
     elements.potentialSection.classList.remove('hidden');
     data.potentialFeeds.slice(0, 5).forEach(feed => {
       elements.potentialList.appendChild(createFeedItem(feed));
@@ -130,7 +192,7 @@ function displayResults(data, elements) {
 
   // Show no feeds message if nothing found
   if ((!data.feeds || data.feeds.length === 0) &&
-      (!data.potentialFeeds || data.potentialFeeds.length === 0)) {
+      (!settings.showPotential || !data.potentialFeeds || data.potentialFeeds.length === 0)) {
     elements.noFeeds.classList.remove('hidden');
   }
 }
@@ -141,7 +203,8 @@ function createFeedItem(feed, isCurrentPage = false) {
 
   const icon = getFeedIcon(feed.type);
   const typeClass = feed.type?.toLowerCase().includes('atom') ? 'atom' :
-                    feed.type?.toLowerCase().includes('json') ? 'json' : '';
+                    feed.type?.toLowerCase().includes('json') ? 'json' :
+                    feed.type?.toLowerCase().includes('rss') ? 'rss' : '';
 
   li.innerHTML = `
     <span class="feed-icon">${icon}</span>
@@ -183,7 +246,7 @@ function getFeedIcon(type) {
   if (t.includes('json')) return '📄';
   if (t.includes('atom')) return '⚛️';
   if (t.includes('rss') || t.includes('rdf')) return '📡';
-  return '📰';
+  return '🦇';
 }
 
 function getFeedType(contentType) {

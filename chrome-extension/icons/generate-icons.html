@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Icon Generator</title>
+  <title>FeedBat Icon Generator</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    canvas { border: 1px solid #ccc; margin: 10px; }
+    body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+    h1 { color: #5a4fcf; }
+    canvas { border: 1px solid #ccc; margin: 10px; background: white; }
     .icons { display: flex; gap: 20px; flex-wrap: wrap; }
     .icon-container { text-align: center; }
-    button { margin: 20px 0; padding: 10px 20px; }
+    button { margin: 20px 0; padding: 10px 20px; background: #5a4fcf; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #4a3fbf; }
+    .preview { font-size: 64px; margin: 20px 0; }
   </style>
 </head>
 <body>
-  <h1>RSS Feed Detector Icon Generator</h1>
+  <h1>FeedBat Icon Generator</h1>
   <p>Click the button to download icons. Open this file in a browser.</p>
+
+  <div class="preview">🦇</div>
 
   <div class="icons">
     <div class="icon-container">
@@ -43,31 +48,66 @@
       const size = canvas.width;
       const scale = size / 128;
 
-      // Background circle (RSS orange)
-      ctx.fillStyle = '#FF6600';
+      // Clear
+      ctx.clearRect(0, 0, size, size);
+
+      // Background circle (purple)
+      ctx.fillStyle = '#5a4fcf';
       ctx.beginPath();
-      ctx.arc(size/2, size/2, size/2 - 2*scale, 0, Math.PI * 2);
+      ctx.arc(size/2, size/2, size/2 - 1, 0, Math.PI * 2);
       ctx.fill();
 
-      // RSS icon elements (white)
+      // Draw bat silhouette
+      ctx.fillStyle = '#2d2654';
+
+      // Body
+      ctx.beginPath();
+      ctx.ellipse(size/2, size/2 + 10*scale, 20*scale, 30*scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Head
+      ctx.beginPath();
+      ctx.arc(size/2, size/2 - 20*scale, 15*scale, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Left ear
+      ctx.beginPath();
+      ctx.moveTo(size/2 - 10*scale, size/2 - 30*scale);
+      ctx.lineTo(size/2 - 20*scale, size/2 - 55*scale);
+      ctx.lineTo(size/2 - 5*scale, size/2 - 35*scale);
+      ctx.closePath();
+      ctx.fill();
+
+      // Right ear
+      ctx.beginPath();
+      ctx.moveTo(size/2 + 10*scale, size/2 - 30*scale);
+      ctx.lineTo(size/2 + 20*scale, size/2 - 55*scale);
+      ctx.lineTo(size/2 + 5*scale, size/2 - 35*scale);
+      ctx.closePath();
+      ctx.fill();
+
+      // Left wing
+      ctx.beginPath();
+      ctx.moveTo(size/2 - 15*scale, size/2);
+      ctx.quadraticCurveTo(size/2 - 55*scale, size/2 - 20*scale, size/2 - 50*scale, size/2 + 20*scale);
+      ctx.quadraticCurveTo(size/2 - 40*scale, size/2 + 35*scale, size/2 - 15*scale, size/2 + 25*scale);
+      ctx.closePath();
+      ctx.fill();
+
+      // Right wing
+      ctx.beginPath();
+      ctx.moveTo(size/2 + 15*scale, size/2);
+      ctx.quadraticCurveTo(size/2 + 55*scale, size/2 - 20*scale, size/2 + 50*scale, size/2 + 20*scale);
+      ctx.quadraticCurveTo(size/2 + 40*scale, size/2 + 35*scale, size/2 + 15*scale, size/2 + 25*scale);
+      ctx.closePath();
+      ctx.fill();
+
+      // Eyes (small white dots)
       ctx.fillStyle = 'white';
-      ctx.strokeStyle = 'white';
-      ctx.lineWidth = 8 * scale;
-
-      // Bottom-left dot
       ctx.beginPath();
-      ctx.arc(32*scale, 96*scale, 10*scale, 0, Math.PI * 2);
+      ctx.arc(size/2 - 6*scale, size/2 - 22*scale, 3*scale, 0, Math.PI * 2);
+      ctx.arc(size/2 + 6*scale, size/2 - 22*scale, 3*scale, 0, Math.PI * 2);
       ctx.fill();
-
-      // First arc
-      ctx.beginPath();
-      ctx.arc(32*scale, 96*scale, 30*scale, -Math.PI/2, 0);
-      ctx.stroke();
-
-      // Second arc
-      ctx.beginPath();
-      ctx.arc(32*scale, 96*scale, 55*scale, -Math.PI/2, 0);
-      ctx.stroke();
     }
 
     // Draw all icons
