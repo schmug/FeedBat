@@ -64,6 +64,17 @@ FeedBat detects feeds using multiple methods:
 2. **Direct Detection** - Checks if the current page is itself a feed
 3. **URL Patterns** - Identifies links containing feed-related keywords (rss, atom, feed, etc.)
 4. **Common Paths** - Probes standard locations like `/feed`, `/rss.xml`, `/atom.xml`
+5. **YouTube Channels** - Automatically extracts RSS feeds from YouTube videos, shorts, and channel pages
+
+### YouTube RSS Detection
+
+YouTube doesn't advertise RSS feeds, but every channel has one. FeedBat automatically detects YouTube pages and extracts the channel's RSS feed URL:
+
+- **Video pages** (`/watch?v=...`) - Extracts the channel ID from the video owner
+- **Shorts** (`/shorts/...`) - Extracts from the shorts player overlay
+- **Channel pages** (`/@username`, `/channel/...`, `/c/...`) - Extracts from the channel header
+
+Since YouTube is a Single Page Application (SPA), FeedBat waits for YouTube's dynamic content to load before detecting feeds. It also listens for navigation events to update the feed when you browse between videos.
 
 ## Credits
 

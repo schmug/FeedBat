@@ -82,6 +82,27 @@ FeedBat uses the same detection strategies as the original feedsearch-crawler li
 
 4. **Common Path Probing**: Checks standard feed locations like `/feed`, `/rss.xml`, `/atom.xml`
 
+5. **YouTube Channel RSS**: Automatically extracts RSS feeds from YouTube pages
+
+### YouTube RSS Detection
+
+YouTube channels have RSS feeds at `https://www.youtube.com/feeds/videos.xml?channel_id=UC...` but YouTube doesn't advertise them. FeedBat automatically extracts the channel ID and constructs the feed URL.
+
+**Supported YouTube pages:**
+- Video pages (`youtube.com/watch?v=...`) - Extracts channel from video owner
+- Shorts (`youtube.com/shorts/...`) - Extracts from shorts player
+- Channel pages (`youtube.com/@username`, `/channel/UC...`, `/c/...`, `/user/...`)
+
+**How it works:**
+1. Detects YouTube URLs by domain
+2. Waits for YouTube's dynamic content to load (YouTube is an SPA)
+3. Extracts channel ID from DOM elements, meta tags, or embedded JSON
+4. Constructs RSS feed URL: `https://www.youtube.com/feeds/videos.xml?channel_id={id}`
+
+**SPA Navigation:**
+- Listens for YouTube's `yt-navigate-finish` event to re-detect feeds when navigating
+- Uses MutationObserver to wait for dynamic elements before detection
+
 ## Feed Types Detected
 
 - RSS 2.0 / RSS 1.0
