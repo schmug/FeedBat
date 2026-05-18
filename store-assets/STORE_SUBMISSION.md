@@ -33,6 +33,26 @@ Chrome will not approve the listing without a reachable privacy policy URL.
 
 ---
 
+## 1b. Smoke-test the unpacked extension (DO NOT SKIP)
+
+The manifest was tightened (no `host_permissions`); `activeTab` + statically
+declared content scripts should cover everything, but this must be confirmed in
+a real browser before submission — a broken extension can still pass review.
+
+1. `chrome://extensions/` → enable **Developer mode** → **Load unpacked** →
+   select the `chrome-extension/` folder.
+2. Run each check:
+   - Visit a site with a declared feed (e.g. `theverge.com`) → feeds appear in
+     the popup; badge shows a count.
+   - Visit a site with no `<link>` feed → click **Check common paths** → it
+     finds the feed (this exercises the `activeTab` cross-origin HEAD probe —
+     the part most sensitive to the permission change).
+   - Visit a YouTube video or channel → the channel RSS feed appears.
+   - Open Settings, toggle a checkbox, reopen the popup → the setting persisted.
+3. If the **Check common paths** probe fails with a permission error, re-add a
+   narrower `host_permissions` (or `<all_urls>` with the written justification)
+   to `manifest.json`, rebuild, and re-test.
+
 ## 2. Build the upload package
 
 ```bash
