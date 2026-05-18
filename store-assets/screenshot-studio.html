@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FeedBat — Store Asset Studio</title>
+<style>
+  /* ----- Studio chrome (not part of the assets) ----- */
+  :root { --brand:#5a4fcf; --brand2:#7c6fd4; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+         background:#1c1b22; color:#eee; padding:24px; }
+  h1 { font-size:18px; margin:0 0 4px; }
+  p.lede { color:#9b97b3; margin:0 0 20px; font-size:13px; }
+  .toolbar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+  .toolbar button { background:#2d2b38; color:#eee; border:1px solid #44415a;
+        padding:8px 14px; border-radius:6px; cursor:pointer; font-size:13px; }
+  .toolbar button:hover { background:#3a3748; }
+  .toolbar button.active { background:var(--brand); border-color:var(--brand); }
+  .stage { display:flex; flex-direction:column; gap:32px; align-items:flex-start; }
+  .asset-wrap { background:repeating-conic-gradient(#2a2933 0% 25%, #232229 0% 50%) 50%/24px 24px; }
+  .asset-meta { font-size:12px; color:#9b97b3; margin:6px 2px 10px; display:flex;
+        gap:12px; align-items:center; }
+  .asset-meta .dl { background:var(--brand); color:#fff; border:none; padding:5px 12px;
+        border-radius:5px; cursor:pointer; font-size:12px; }
+  .asset { display:none; }
+  .asset.show { display:block; }
+
+  /* ===== EXACT STORE DIMENSIONS ===== */
+  #shot-feeds, #shot-youtube, #shot-settings { width:1280px; height:800px; }
+  #promo-small { width:440px; height:280px; }
+  #promo-marquee { width:1400px; height:560px; }
+
+  /* ----- Shared marketing canvas ----- */
+  .canvas { position:relative; overflow:hidden;
+        background:linear-gradient(135deg,#5a4fcf 0%,#7c6fd4 55%,#9b8fe0 100%);
+        color:#fff; display:flex; align-items:center; }
+  .canvas .copy { flex:1; padding:0 80px; }
+  .canvas .badge { display:inline-block; background:rgba(255,255,255,.18);
+        padding:6px 14px; border-radius:999px; font-size:16px; letter-spacing:.5px;
+        margin-bottom:24px; }
+  .canvas h2 { font-size:54px; line-height:1.1; margin:0 0 20px; font-weight:700; }
+  .canvas h2 .accent { color:#ffe27a; }
+  .canvas ul { list-style:none; padding:0; margin:0; font-size:22px; line-height:2; }
+  .canvas ul li::before { content:"✓"; color:#ffe27a; font-weight:700; margin-right:12px; }
+  .canvas .device { flex-shrink:0; padding-right:80px; }
+
+  /* ----- Faithful popup mock (mirrors popup.css) ----- */
+  .pop { width:400px; background:#fff; color:#333; border-radius:14px;
+        box-shadow:0 30px 70px rgba(0,0,0,.45); overflow:hidden; font-size:14px;
+        line-height:1.5; }
+  .pop header { background:linear-gradient(135deg,#5a4fcf 0%,#7c6fd4 100%);
+        color:#fff; padding:12px 16px; display:flex; align-items:center; gap:12px; }
+  .pop .logo { font-size:24px; }
+  .pop .si { flex:1; min-width:0; }
+  .pop .si h1 { font-size:16px; font-weight:600; margin:0; }
+  .pop .si span { font-size:12px; opacity:.9; }
+  .pop .gear { background:rgba(255,255,255,.2); width:28px; height:28px;
+        border-radius:4px; display:flex; align-items:center; justify-content:center;
+        font-size:16px; }
+  .pop main { padding:16px; }
+  .pop h3 { font-size:12px; font-weight:600; text-transform:uppercase;
+        letter-spacing:.5px; color:#666; margin:0 0 8px; }
+  .pop .feed { display:flex; align-items:center; gap:8px; padding:10px 12px;
+        margin-bottom:8px; background:#f8f9fa; border-radius:8px; }
+  .pop .feed.pot { background:#f9f8ff; }
+  .pop .fi { font-size:18px; }
+  .pop .fc { flex:1; min-width:0; }
+  .pop .ft { font-weight:500; }
+  .pop .fu { font-size:11px; color:#888; }
+  .pop .badge-tag { font-size:10px; padding:2px 6px; background:#6f42c1;
+        color:#fff; border-radius:4px; margin-left:6px; }
+  .pop .typ { font-size:10px; font-weight:600; text-transform:uppercase;
+        padding:2px 6px; color:#fff; border-radius:4px; }
+  .pop .typ.rss { background:#FF6600; } .pop .typ.atom { background:#0066CC; }
+  .pop .typ.json { background:#28a745; } .pop .typ.feed { background:#5a4fcf; }
+  .pop .acts { display:flex; gap:4px; }
+  .pop .ib { width:28px; height:28px; border-radius:4px; display:flex;
+        align-items:center; justify-content:center; font-size:14px;
+        background:rgba(0,0,0,.05); }
+  .pop .pot-sec { margin-top:16px; padding-top:16px; border-top:1px solid #eee; }
+  .pop .hint { font-size:12px; color:#888; margin:0 0 8px; }
+  .pop footer { padding:12px 16px; text-align:center; border-top:1px solid #eee;
+        font-size:11px; color:#999; }
+  .pop .set { display:flex; align-items:center; gap:10px; padding:8px 12px;
+        border-radius:6px; }
+  .pop .set:hover { background:#f5f5f5; }
+  .pop .cb { width:18px; height:18px; border-radius:4px; border:2px solid #5a4fcf;
+        display:flex; align-items:center; justify-content:center; color:#5a4fcf;
+        font-size:13px; font-weight:700; }
+  .pop .cb.off { border-color:#bbb; color:transparent; }
+  .pop .done { width:100%; margin-top:12px; padding:9px; background:#5a4fcf;
+        color:#fff; border:none; border-radius:6px; font-weight:500; font-size:14px; }
+</style>
+</head>
+<body>
+<h1>FeedBat — Store Asset Studio</h1>
+<p class="lede">Each panel below is sized to the exact pixel dimensions the Chrome Web Store expects.
+<b>Most reliable capture:</b> open DevTools, right-click the framed element in the
+Elements panel, choose <b>"Capture node screenshot"</b> — it produces an exact-size PNG
+with gradients and emoji intact. The <b>Download PNG</b> button is a best-effort
+convenience that may drop gradients/emoji in some browsers.</p>
+
+<div class="toolbar">
+  <button data-t="shot-feeds" class="active">Screenshot 1 · Feeds found (1280×800)</button>
+  <button data-t="shot-youtube">Screenshot 2 · YouTube (1280×800)</button>
+  <button data-t="shot-settings">Screenshot 3 · Settings (1280×800)</button>
+  <button data-t="promo-small">Small promo tile (440×280)</button>
+  <button data-t="promo-marquee">Marquee tile (1400×560)</button>
+</div>
+
+<div class="stage">
+
+  <!-- ===== Screenshot 1: feeds found ===== -->
+  <div>
+    <div class="asset-meta"><span id="m-shot-feeds">marketing-screenshot-1.png · 1280×800</span>
+      <button class="dl" data-dl="shot-feeds">Download PNG</button></div>
+    <div class="asset-wrap">
+      <div id="shot-feeds" class="asset show">
+        <div class="canvas">
+          <div class="copy">
+            <span class="badge">🦇 FeedBat</span>
+            <h2>Never miss a feed.<br><span class="accent">Find RSS anywhere.</span></h2>
+            <ul><li>RSS, Atom &amp; JSON detection</li><li>One-click copy or open</li>
+              <li>Works on any website</li></ul>
+          </div>
+          <div class="device">
+            <div class="pop">
+              <header><span class="logo">🦇</span><div class="si"><h1>The Verge</h1>
+                <span>theverge.com</span></div><span class="gear">⚙️</span></header>
+              <main>
+                <h3>Feeds Found</h3>
+                <div class="feed"><span class="fi">📡</span><div class="fc">
+                  <div class="ft">The Verge - All Posts</div><div class="fu">theverge.com/rss/index.xml</div></div>
+                  <span class="typ rss">RSS</span><div class="acts"><span class="ib">📋</span><span class="ib">↗️</span></div></div>
+                <div class="feed"><span class="fi">⚛️</span><div class="fc">
+                  <div class="ft">Tech News</div><div class="fu">theverge.com/tech/atom.xml</div></div>
+                  <span class="typ atom">Atom</span><div class="acts"><span class="ib">📋</span><span class="ib">↗️</span></div></div>
+                <div class="feed"><span class="fi">📄</span><div class="fc">
+                  <div class="ft">JSON Feed</div><div class="fu">theverge.com/feed.json</div></div>
+                  <span class="typ json">JSON</span><div class="acts"><span class="ib">📋</span><span class="ib">↗️</span></div></div>
+              </main>
+              <footer>FeedBat on GitHub</footer>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Screenshot 2: YouTube ===== -->
+  <div>
+    <div class="asset-meta"><span>marketing-screenshot-2.png · 1280×800</span>
+      <button class="dl" data-dl="shot-youtube">Download PNG</button></div>
+    <div class="asset-wrap">
+      <div id="shot-youtube" class="asset">
+        <div class="canvas">
+          <div class="copy">
+            <span class="badge">🦇 FeedBat</span>
+            <h2>YouTube has<br><span class="accent">hidden RSS feeds.</span></h2>
+            <ul><li>Auto-detects channel feeds</li><li>Works on videos, shorts &amp; channels</li>
+              <li>No login, no tracking</li></ul>
+          </div>
+          <div class="device">
+            <div class="pop">
+              <header><span class="logo">🦇</span><div class="si"><h1>YouTube</h1>
+                <span>youtube.com/watch</span></div><span class="gear">⚙️</span></header>
+              <main>
+                <h3>Feeds Found</h3>
+                <div class="feed"><span class="fi">📡</span><div class="fc">
+                  <div class="ft">Veritasium - YouTube</div><div class="fu">youtube.com/feeds/videos.xml?channel_id=UCHnyfMqiRRG1u-2MsSQLbXA</div></div>
+                  <span class="typ rss">RSS</span><div class="acts"><span class="ib">📋</span><span class="ib">↗️</span></div></div>
+              </main>
+              <footer>FeedBat on GitHub</footer>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Screenshot 3: settings ===== -->
+  <div>
+    <div class="asset-meta"><span>marketing-screenshot-3.png · 1280×800</span>
+      <button class="dl" data-dl="shot-settings">Download PNG</button></div>
+    <div class="asset-wrap">
+      <div id="shot-settings" class="asset">
+        <div class="canvas">
+          <div class="copy">
+            <span class="badge">🦇 FeedBat</span>
+            <h2>Tune it to<br><span class="accent">your workflow.</span></h2>
+            <ul><li>Auto-detect on page load</li><li>Optional badge counter</li>
+              <li>Probe common feed paths</li></ul>
+          </div>
+          <div class="device">
+            <div class="pop">
+              <header><span class="logo">🦇</span><div class="si"><h1>FeedBat</h1>
+                <span>Settings</span></div><span class="gear">⚙️</span></header>
+              <main>
+                <h3>Settings</h3>
+                <div class="set"><span class="cb">✓</span><span>Auto-detect feeds on page load</span></div>
+                <div class="set"><span class="cb off">✓</span><span>Show potential feed links</span></div>
+                <div class="set"><span class="cb">✓</span><span>Show badge count</span></div>
+                <div class="set"><span class="cb off">✓</span><span>Auto-probe common feed paths</span></div>
+                <button class="done">Done</button>
+              </main>
+              <footer>FeedBat on GitHub</footer>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Small promo tile ===== -->
+  <div>
+    <div class="asset-meta"><span>promo-small-440x280.png · 440×280</span>
+      <button class="dl" data-dl="promo-small">Download PNG</button></div>
+    <div class="asset-wrap">
+      <div id="promo-small" class="asset">
+        <div class="canvas" style="flex-direction:column;justify-content:center;text-align:center;">
+          <div style="font-size:96px;line-height:1;">🦇</div>
+          <div style="font-size:40px;font-weight:700;margin-top:8px;">FeedBat</div>
+          <div style="font-size:17px;opacity:.92;margin-top:6px;">Find RSS feeds anywhere</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Marquee tile ===== -->
+  <div>
+    <div class="asset-meta"><span>promo-marquee-1400x560.png · 1400×560</span>
+      <button class="dl" data-dl="promo-marquee">Download PNG</button></div>
+    <div class="asset-wrap">
+      <div id="promo-marquee" class="asset">
+        <div class="canvas" style="justify-content:center;text-align:center;flex-direction:column;">
+          <div style="font-size:150px;line-height:1;">🦇</div>
+          <div style="font-size:78px;font-weight:700;margin-top:12px;">FeedBat</div>
+          <div style="font-size:30px;opacity:.92;margin-top:10px;">
+            Discover RSS, Atom &amp; JSON feeds on any webpage</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Tab switching
+  const buttons = document.querySelectorAll('.toolbar button');
+  buttons.forEach(b => b.addEventListener('click', () => {
+    buttons.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.asset').forEach(a => a.classList.remove('show'));
+    document.getElementById(b.dataset.t).classList.add('show');
+  }));
+
+  // Offline PNG export via SVG foreignObject — no external libraries / remote code.
+  document.querySelectorAll('.dl').forEach(btn => btn.addEventListener('click', () => {
+    const el = document.getElementById(btn.dataset.dl);
+    const wasShown = el.classList.contains('show');
+    el.classList.add('show');
+    const w = el.offsetWidth, h = el.offsetHeight;
+
+    // Inline computed styles so the serialized clone renders identically.
+    const clone = el.cloneNode(true);
+    (function inline(src, dst){
+      const cs = getComputedStyle(src);
+      let s = '';
+      for (const p of cs) s += `${p}:${cs.getPropertyValue(p)};`;
+      dst.setAttribute('style', s);
+      for (let i=0;i<src.children.length;i++) inline(src.children[i], dst.children[i]);
+    })(el, clone);
+
+    const xml = new XMLSerializer().serializeToString(clone);
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
+      <foreignObject width="100%" height="100%">
+        <div xmlns="http://www.w3.org/1999/xhtml">${xml}</div>
+      </foreignObject></svg>`;
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0);
+      const a = document.createElement('a');
+      a.download = btn.previousElementSibling
+        ? btn.parentElement.querySelector('span').textContent.split(' ')[0]
+        : 'feedbat-asset.png';
+      a.href = c.toDataURL('image/png');
+      a.click();
+      if (!wasShown) el.classList.remove('show');
+    };
+    img.onerror = () => {
+      alert('Inline export failed in this browser. Fallback: use your OS screenshot tool '
+        + '(macOS: Cmd+Shift+4) or DevTools → right-click the element → "Capture node screenshot".');
+      if (!wasShown) el.classList.remove('show');
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }));
+</script>
+</body>
+</html>

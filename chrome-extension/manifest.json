@@ -3,12 +3,10 @@
   "name": "FeedBat",
   "version": "1.0.0",
   "description": "Discover RSS, Atom, and JSON feeds on any webpage. A companion to your RSS reader.",
+  "homepage_url": "https://github.com/schmug/FeedBat",
   "permissions": [
     "activeTab",
     "storage"
-  ],
-  "host_permissions": [
-    "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js"

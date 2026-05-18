@@ -154,7 +154,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         elements.checkCommon.textContent = 'No feeds found';
       }
     } catch (error) {
-      elements.checkCommon.textContent = 'Error checking';
+      // activeTab access is granted when the popup opens; if the page was
+      // navigated while the popup was open, the grant is revoked and the
+      // cross-origin probe fails. Tell the user how to recover.
+      elements.checkCommon.textContent = 'Reopen FeedBat and try again';
     }
   });
 });
@@ -275,9 +278,12 @@ function truncateUrl(url) {
 }
 
 function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+  return String(text ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function showError(message) {

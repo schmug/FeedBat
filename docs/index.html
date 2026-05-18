@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FeedBat — Find RSS feeds anywhere</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+       color:#fff;background:linear-gradient(135deg,#5a4fcf 0%,#7c6fd4 55%,#9b8fe0 100%);
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;
+       justify-content:center;text-align:center;padding:40px 24px}
+  .bat{font-size:120px;line-height:1}
+  h1{font-size:48px;margin:12px 0 8px}
+  p.tag{font-size:20px;opacity:.92;margin-bottom:32px}
+  ul{list-style:none;font-size:17px;line-height:2.1;margin-bottom:36px}
+  ul li::before{content:"✓ ";color:#ffe27a;font-weight:700}
+  .links a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);
+       padding:10px 22px;border-radius:8px;margin:0 6px;font-size:15px;display:inline-block}
+  .links a:hover{background:rgba(255,255,255,.15)}
+  footer{margin-top:40px;font-size:13px;opacity:.8}
+  footer a{color:#fff}
+</style>
+</head>
+<body>
+  <div class="bat">🦇</div>
+  <h1>FeedBat</h1>
+  <p class="tag">Discover RSS, Atom &amp; JSON feeds on any webpage.</p>
+  <ul>
+    <li>Automatic feed detection on every site</li>
+    <li>Finds YouTube channels' hidden RSS feeds</li>
+    <li>One-click copy or open</li>
+    <li>No accounts, no tracking, no servers</li>
+  </ul>
+  <div class="links">
+    <a href="https://github.com/schmug/FeedBat">View on GitHub</a>
+    <a href="privacy.html">Privacy Policy</a>
+  </div>
+  <footer>
+    Feed detection adapted from
+    <a href="https://github.com/DBeath/feedsearch-crawler">feedsearch-crawler</a>
+    by DBeath · MIT License
+  </footer>
+</body>
+</html>
