@@ -111,9 +111,12 @@
 <body>
 <h1>FeedBat — Store Asset Studio · Don't Hype Me crossover</h1>
 <p class="lede">Each panel is sized to the exact pixels the Chrome Web Store expects.
-<b>Most reliable capture:</b> open DevTools, right-click the framed element in the
-Elements panel → <b>"Capture node screenshot"</b> — exact size, gradients and art
-intact. The <b>Download PNG</b> button is a best-effort convenience.</p>
+<b>Use DevTools → right-click the framed element → "Capture node screenshot".</b>
+That is the only path that includes the BaitBat artwork at full fidelity.
+⚠️ The <b>Download PNG</b> button cannot embed the <code>&lt;img&gt;</code> bat /
+banner art (SVG-foreignObject rasterization doesn't load referenced images), so
+its output will show broken-image boxes where the mascot should be — use it only
+for art-free layout checks.</p>
 
 <div class="toolbar">
   <button data-t="shot-feeds" class="active">Screenshot 1 · Feeds found (1280×800)</button>
