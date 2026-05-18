@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "FeedBat",
   "version": "1.0.0",
-  "description": "Discover RSS, Atom, and JSON feeds on any webpage. A companion to your RSS reader.",
+  "description": "Discover RSS, Atom, and JSON feeds on any webpage — the bat-powered companion to the Don't Hype Me RSS reader.",
   "homepage_url": "https://github.com/schmug/FeedBat",
   "permissions": [
     "activeTab",
