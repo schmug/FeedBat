@@ -5,25 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FeedBat — Find RSS feeds anywhere</title>
 <style>
+  @font-face{font-family:'Inter';font-weight:400;font-display:swap;
+    src:url('assets/inter-400.woff2') format('woff2')}
+  @font-face{font-family:'Inter';font-weight:600;font-display:swap;
+    src:url('assets/inter-600.woff2') format('woff2')}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-       color:#fff;background:linear-gradient(135deg,#5a4fcf 0%,#7c6fd4 55%,#9b8fe0 100%);
-       min-height:100vh;display:flex;flex-direction:column;align-items:center;
-       justify-content:center;text-align:center;padding:40px 24px}
-  .bat{font-size:120px;line-height:1}
-  h1{font-size:48px;margin:12px 0 8px}
-  p.tag{font-size:20px;opacity:.92;margin-bottom:32px}
-  ul{list-style:none;font-size:17px;line-height:2.1;margin-bottom:36px}
-  ul li::before{content:"✓ ";color:#ffe27a;font-weight:700}
-  .links a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);
-       padding:10px 22px;border-radius:8px;margin:0 6px;font-size:15px;display:inline-block}
-  .links a:hover{background:rgba(255,255,255,.15)}
-  footer{margin-top:40px;font-size:13px;opacity:.8}
-  footer a{color:#fff}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+       color:#2E2A3F;background:#ECE6FA;min-height:100vh;display:flex;
+       flex-direction:column;align-items:center;justify-content:center;
+       text-align:center;padding:48px 24px}
+  .banner{max-width:560px;width:100%;height:auto;margin-bottom:8px;
+       filter:drop-shadow(0 12px 28px rgba(91,63,160,.22))}
+  h1{font-size:46px;font-weight:600;margin:8px 0 6px;color:#2E2A3F}
+  p.tag{font-size:19px;color:#6B6580;margin-bottom:30px}
+  ul{list-style:none;font-size:16px;line-height:2.1;margin-bottom:34px;color:#2E2A3F}
+  ul li::before{content:"✦ ";color:#F5B400;font-weight:700}
+  .links a{font-weight:600;text-decoration:none;padding:11px 24px;border-radius:8px;
+       margin:6px;font-size:15px;display:inline-block}
+  .primary{background:#5B3FA0;color:#fff}
+  .primary:hover{background:#4C3388}
+  .ghost{color:#5B3FA0;border:1px solid #C9BBE8}
+  .ghost:hover{background:#F5F1FC}
+  footer{margin-top:40px;font-size:13px;color:#6B6580}
+  footer a{color:#5B3FA0;text-decoration:none}
 </style>
 </head>
 <body>
-  <div class="bat">🦇</div>
+  <img class="banner" src="assets/baitbat-banner.png"
+       alt="FeedBat — the bat that finds your feeds">
   <h1>FeedBat</h1>
   <p class="tag">Discover RSS, Atom &amp; JSON feeds on any webpage.</p>
   <ul>
@@ -33,13 +42,15 @@
     <li>No accounts, no tracking, no servers</li>
   </ul>
   <div class="links">
-    <a href="https://github.com/schmug/FeedBat">View on GitHub</a>
-    <a href="privacy.html">Privacy Policy</a>
+    <a class="primary" href="https://github.com/schmug/FeedBat">View on GitHub</a>
+    <a class="ghost" href="privacy.html">Privacy Policy</a>
   </div>
   <footer>
-    Feed detection adapted from
-    <a href="https://github.com/DBeath/feedsearch-crawler">feedsearch-crawler</a>
-    by DBeath · MIT License
+    A bat-powered companion to the
+    <a href="https://github.com/schmug/donthype-me">Don't Hype Me</a> RSS reader ·
+    feed detection adapted from
+    <a href="https://github.com/DBeath/feedsearch-crawler">feedsearch-crawler</a> ·
+    MIT
   </footer>
 </body>
 </html>

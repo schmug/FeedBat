@@ -30,6 +30,7 @@ rm -f "$OUT"
     -x "icons/generate-icons.html" \
        "icons/generate-icons.js" \
        "README.md" \
+       "assets/CREDITS.md" \
        ".DS_Store" \
        "*/.DS_Store" )
 
