@@ -13,10 +13,11 @@ Thumbs.db
 node_modules/
 npm-debug.log
 
-# Packed extension
+# Packed extension / build output
 *.crx
 *.pem
 *.zip
+dist/
 
 # Logs
 *.log

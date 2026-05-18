@@ -17,6 +17,12 @@ A Chrome extension that discovers RSS, Atom, and JSON feeds on any webpage. Your
 
 ## Installation
 
+### From the Chrome Web Store
+
+Once published, install FeedBat directly from the Chrome Web Store. (Submission
+materials live in [`store-assets/`](store-assets/) — see
+[`STORE_SUBMISSION.md`](store-assets/STORE_SUBMISSION.md).)
+
 ### From Source
 
 1. Clone this repository:
@@ -25,18 +31,27 @@ A Chrome extension that discovers RSS, Atom, and JSON feeds on any webpage. Your
    cd FeedBat
    ```
 
-2. Generate icons (first time only):
-   - Open `chrome-extension/icons/generate-icons.html` in your browser
-   - Click "Download All Icons"
-   - Save the PNG files to the `chrome-extension/icons/` folder
-
-3. Load in Chrome:
+2. Load in Chrome:
    - Go to `chrome://extensions/`
    - Enable "Developer mode"
    - Click "Load unpacked"
    - Select the `chrome-extension` folder
 
-4. Pin the extension for easy access
+3. Pin the extension for easy access
+
+Icons are already committed to `chrome-extension/icons/`. To regenerate them,
+open `chrome-extension/icons/generate-icons.html` in a browser.
+
+## Packaging for the Chrome Web Store
+
+```bash
+./build.sh
+```
+
+Produces `dist/feedbat-<version>.zip` with `manifest.json` at the archive root
+and development-only files excluded. Full submission walkthrough (privacy
+policy, store listing copy, screenshots, dashboard steps) is in
+[`store-assets/STORE_SUBMISSION.md`](store-assets/STORE_SUBMISSION.md).
 
 ## Usage
 
@@ -83,6 +98,12 @@ The feed detection logic in this extension is adapted from [**feedsearch-crawler
 **Original Library:**
 - [feedsearch-crawler on GitHub](https://github.com/DBeath/feedsearch-crawler)
 - [feedsearch-crawler on PyPI](https://pypi.org/project/feedsearch-crawler/)
+
+## Privacy
+
+FeedBat has no servers, no analytics, and no tracking. Page analysis happens
+entirely in your browser. See [PRIVACY.md](PRIVACY.md) (hosted at
+https://schmug.github.io/FeedBat/privacy.html).
 
 ## License
 
