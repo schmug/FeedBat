@@ -11,9 +11,9 @@ FeedBat
 
 ## Summary (≤ 132 characters — also the manifest `description`)
 ```
-Discover RSS, Atom, and JSON feeds on any webpage. A companion to your RSS reader.
+Discover RSS, Atom, and JSON feeds on any webpage — the bat-powered companion to the Don't Hype Me RSS reader.
 ```
-(81 characters.)
+(109 characters. Must stay in sync with `description` in manifest.json.)
 
 ## Category
 **Productivity** → (sub-category if asked: *Workflow & Planning* / *Tools*)
@@ -26,12 +26,15 @@ English (United States)
 ## Detailed description
 
 ```
-FeedBat is your trusty companion for finding feeds in the wild. 🦇
+Meet BaitBat — your trusty companion for finding feeds in the wild.
 
 Stop hunting through page source for the subscribe link. FeedBat automatically
 detects RSS, Atom, and JSON feeds on whatever page you're viewing and shows them
 in a clean popup — ready to copy into your favorite RSS reader or open in a new
 tab with one click.
+
+FeedBat is the bat-powered browsing companion to the Don't Hype Me RSS reader,
+sharing its BaitBat mascot — but it works with any reader you like.
 
 WHAT IT DOES
 • Automatically detects RSS, Atom, JSON Feed, and RDF feeds on any site

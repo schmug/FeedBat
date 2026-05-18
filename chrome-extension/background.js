@@ -35,7 +35,7 @@ function updateBadge(tabId, feedCount) {
 
   if (feedCount > 0) {
     chrome.action.setBadgeText({ tabId, text: String(feedCount) });
-    chrome.action.setBadgeBackgroundColor({ tabId, color: '#5a4fcf' }); // Purple to match theme
+    chrome.action.setBadgeBackgroundColor({ tabId, color: '#5B3FA0' }); // BaitBat purple (crossover theme)
     chrome.action.setTitle({ tabId, title: `${feedCount} feed(s) found` });
   } else {
     chrome.action.setBadgeText({ tabId, text: '' });
